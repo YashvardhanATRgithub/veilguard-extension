@@ -51,69 +51,301 @@
 
 ---
 
-## 🚀 Quick Start (Users)
+## 🚀 Complete Setup Guide
 
-### 1. Install Ollama
+### Prerequisites
 
-Download from [ollama.com/download](https://ollama.com/download) or use your package manager:
+- **Google Chrome** (or any Chromium-based browser like Edge, Brave, Arc)
+- **~1.5 GB free disk space** (for Ollama + AI model)
+- **Terminal / Command Prompt** access
+
+---
+
+### 🍎 macOS
+
+<details>
+<summary><strong>Click to expand macOS setup instructions</strong></summary>
+
+#### Step 1: Check if Ollama is installed
+
+Open **Terminal** and run:
 
 ```bash
-# macOS (Homebrew)
-brew install ollama
+which ollama
+```
 
-# Linux
+- ✅ If it shows a path like `/usr/local/bin/ollama` → Ollama is installed, **skip to Step 3**.
+- ❌ If it says `ollama not found` → Continue to Step 2.
+
+#### Step 2: Install Ollama
+
+Choose one method:
+
+**Option A — Official Installer (Recommended):**
+
+Download from [ollama.com/download](https://ollama.com/download) and run the `.dmg` installer.
+
+**Option B — Via Homebrew:**
+
+```bash
+brew install ollama
+```
+
+**Option C — Via curl:**
+
+```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-### 2. Configure Ollama for VeilGuard
+#### Step 3: Configure & Auto-start Ollama
 
-VeilGuard needs Ollama to allow browser extension requests. This is a **one-time setup**:
+VeilGuard needs Ollama to allow browser extension requests (CORS). This is a **one-time setup**.
 
-**macOS (Homebrew):**
+**If installed via Homebrew:**
+
+1. Add the environment variable to your shell:
+
 ```bash
 echo 'export OLLAMA_ORIGINS="*"' >> ~/.zshrc && source ~/.zshrc
-launchctl setenv OLLAMA_ORIGINS "*"
+```
+
+2. Enable auto-start as a background service:
+
+```bash
 brew services start ollama
 ```
 
-**macOS (.dmg app):**
+> Ollama will now start automatically on every login. No terminal needed.
+
+**If installed via .dmg (desktop app):**
+
+1. Set the env var for GUI apps:
+
 ```bash
 launchctl setenv OLLAMA_ORIGINS "*"
 ```
-Then open Ollama → Preferences → enable "Launch at login" and restart the app.
 
-**Windows:**
-Add `OLLAMA_ORIGINS` with value `*` as a System Environment Variable (Start → search "Environment Variables" → System variables → New). Restart Ollama.
+2. Open **Ollama app** → click menu bar icon → **Preferences** → enable **"Launch at login"**.
 
-**Linux (systemd):**
+3. **Restart** the Ollama app to apply the env var.
+
+**Manual / one-time start (if you don't want auto-launch):**
+
 ```bash
-sudo systemctl edit ollama
-# Add these lines:
-# [Service]
-# Environment="OLLAMA_ORIGINS=*"
-sudo systemctl restart ollama && sudo systemctl enable ollama
+OLLAMA_ORIGINS='*' ollama serve
 ```
 
-### 3. Pull the AI Model
+**Verify Ollama is running:**
+
+```bash
+curl http://127.0.0.1:11434/
+```
+
+It should respond with `Ollama is running`.
+
+#### Step 4: Pull the AI model
+
+Open a **new** Terminal tab and run:
 
 ```bash
 ollama pull qwen2.5:1.5b
 ```
 
-### 4. Load the Extension
+> This downloads ~1 GB. Wait for it to complete before proceeding.
 
-1. Open `chrome://extensions` in Chrome.
-2. Enable **Developer Mode** (top right).
+</details>
+
+---
+
+### 🪟 Windows
+
+<details>
+<summary><strong>Click to expand Windows setup instructions</strong></summary>
+
+#### Step 1: Check if Ollama is installed
+
+Open **PowerShell** or **Command Prompt** and run:
+
+```powershell
+ollama --version
+```
+
+- ✅ If it shows a version number → Ollama is installed, **skip to Step 3**.
+- ❌ If it says `'ollama' is not recognized` → Continue to Step 2.
+
+#### Step 2: Install Ollama
+
+Download the Windows installer from: [ollama.com/download/windows](https://ollama.com/download/windows)
+
+Run the installer and follow the prompts. Ollama will be added to your system PATH automatically.
+
+#### Step 3: Configure & Auto-start Ollama
+
+VeilGuard needs Ollama to allow browser extension requests. Set this up **once** and Ollama will auto-start with the right settings.
+
+**Permanent setup (Recommended):**
+
+1. Open **Start menu** → search **"Environment Variables"** → click **"Edit the system environment variables"**
+2. Click the **"Environment Variables"** button
+3. Under **System variables**, click **New**:
+   - Variable name: `OLLAMA_ORIGINS`
+   - Variable value: `*`
+4. Click **OK** to save
+5. **Restart** the Ollama system tray app
+
+> Ollama auto-starts with Windows by default via the system tray. This env var ensures VeilGuard can communicate with it.
+
+**Quick start (one-time, not persistent):**
+
+Or start from PowerShell for this session only:
+
+```powershell
+$env:OLLAMA_ORIGINS='*'; ollama serve
+```
+
+#### Step 4: Pull the AI model
+
+Open a **new** PowerShell window and run:
+
+```powershell
+ollama pull qwen2.5:1.5b
+```
+
+> This downloads ~1 GB. Wait for it to complete before proceeding.
+
+</details>
+
+---
+
+### 🐧 Linux
+
+<details>
+<summary><strong>Click to expand Linux setup instructions</strong></summary>
+
+#### Step 1: Check if Ollama is installed
+
+Open a terminal and run:
+
+```bash
+which ollama && ollama --version
+```
+
+- ✅ If it shows a path and version → installed, **skip to Step 3**.
+- ❌ If it says `command not found` → Continue to Step 2.
+
+#### Step 2: Install Ollama
+
+**Official Install Script (Recommended):**
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+> This installs Ollama and sets it up as a systemd service automatically.
+
+**Or download manually:** [ollama.com/download/linux](https://ollama.com/download/linux)
+
+#### Step 3: Configure & Auto-start Ollama
+
+VeilGuard needs Ollama to allow browser extension requests. Set this up **once** and Ollama will auto-start on boot.
+
+**Permanent setup with systemd (Recommended):**
+
+1. Add the CORS override to the Ollama service:
+
+```bash
+sudo systemctl edit ollama
+```
+
+2. In the editor that opens, add these lines and save:
+
+```ini
+[Service]
+Environment="OLLAMA_ORIGINS=*"
+```
+
+3. Restart and enable auto-start:
+
+```bash
+sudo systemctl restart ollama && sudo systemctl enable ollama
+```
+
+> Ollama will now auto-start on every boot with the right permissions.
+
+**Quick start (one-time, not persistent):**
+
+```bash
+OLLAMA_ORIGINS='*' ollama serve
+```
+
+#### Step 4: Pull the AI model
+
+Open a **new** terminal and run:
+
+```bash
+ollama pull qwen2.5:1.5b
+```
+
+> This downloads ~1 GB. Wait for it to complete before proceeding.
+
+</details>
+
+---
+
+### 🧩 Step 5: Load the Chrome Extension (All Platforms)
+
+1. Open `chrome://extensions` in Chrome (or `edge://extensions` in Edge, `brave://extensions` in Brave).
+2. Enable **Developer Mode** (toggle in the top right).
 3. Click **"Load unpacked"**.
 4. Select the `veilguard-extension` folder.
 
-### 5. Enable Protection
+### ✅ Step 6: Enable Protection
 
-1. Click the VeilGuard icon in the toolbar.
-2. Toggle **Privacy Protection** → ON.
-3. Start chatting — sensitive data is automatically redacted!
+1. Click the **VeilGuard icon** in the Chrome toolbar.
+2. Toggle **Privacy Protection** → **ON**.
+3. Start chatting — your sensitive data is automatically redacted!
 
-> 💡 The extension includes a built-in **Setup Guide** page with detailed platform-specific instructions and live status checks. Access it when Ollama is not detected or via the popup.
+> 💡 The extension includes a built-in **Setup Guide** page with live status checks. Access it via the popup when Ollama is not detected.
+
+---
+
+## 🔍 Troubleshooting
+
+<details>
+<summary><strong>Ollama is installed but shows "Offline"</strong></summary>
+
+Ollama needs to be **running** as a background service. Just having it installed is not enough. Start it using the instructions in Step 3 above for your OS.
+</details>
+
+<details>
+<summary><strong>Model pull is very slow</strong></summary>
+
+The `qwen2.5:1.5b` model is about 1 GB. On a slow connection this may take a few minutes. You can track progress in your terminal.
+</details>
+
+<details>
+<summary><strong>Extension still shows "Offline" after starting Ollama</strong></summary>
+
+Wait ~10 seconds or click **Re-check** in the setup page. If it still shows offline, ensure Ollama is running on the default port `11434`. Test with:
+
+```bash
+curl http://127.0.0.1:11434/
+```
+
+It should respond with "Ollama is running".
+</details>
+
+<details>
+<summary><strong>"Model load failed" or 403 errors</strong></summary>
+
+This means Ollama is blocking requests from the browser extension. You must start Ollama with `OLLAMA_ORIGINS='*'` to allow cross-origin requests. See the **Configure & Auto-start** section in your OS tab above.
+</details>
+
+<details>
+<summary><strong>Can I use a different model?</strong></summary>
+
+Yes! Pull any model with `ollama pull <model-name>` and select it from the dropdown in the VeilGuard popup. Larger models are more accurate but use more RAM and are slower. The recommended default is `qwen2.5:1.5b` for its balance of speed, accuracy, and low resource usage (~50 MB RAM).
+</details>
 
 ---
 
