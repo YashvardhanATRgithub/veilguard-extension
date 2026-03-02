@@ -31,6 +31,11 @@
 <p align="center"><em>Advanced settings — LLM config, operational metrics, event log, and runtime limits</em></p>
 
 <p align="center">
+  <img src="screenshots/private-chat.png" alt="Private Chat — fully offline AI" width="800" />
+</p>
+<p align="center"><em>Private Chat — fully offline AI conversations that never leave your device</em></p>
+
+<p align="center">
   <img src="screenshots/memory-usage.png" alt="Low memory usage" width="800" />
 </p>
 <p align="center"><em>Ollama uses only ~50 MB RAM — lightweight enough to run in the background all day</em></p>
@@ -47,6 +52,8 @@
 - **One-click toggle** — Enable/disable protection instantly from the popup.
 - **Model management** — Choose from any Ollama model via the dropdown, with automatic RAM cleanup on disable.
 - **Setup guide** — Built-in platform-specific setup instructions for macOS, Windows, and Linux.
+- **Private Chat** — Built-in offline AI chatbot powered by your local Ollama model. Chat without any internet connection — your messages never leave your device.
+- **Streaming responses** — Private Chat streams tokens in real-time with conversation history saved locally.
 - **Advanced settings** — Custom sensitive terms, confidence thresholds, timeout controls, and reset-to-defaults.
 
 ---
@@ -374,6 +381,7 @@ You see the original names in the AI's response
 3. **Service worker** (`background/service-worker.js`) — Core transform engine, session mapping store, Ollama lifecycle management.
 4. **Adapters** (`background/adapters/`) — Platform-specific payload parsers for ChatGPT, Claude, Gemini, and generic APIs.
 5. **Local LLM redactor** (`background/local-llm-redactor.js`) — Communicates directly with Ollama's `/api/chat` endpoint.
+6. **Private Chat** (`chat/`) — Standalone offline chatbot with streaming, conversation history, and model selection.
 
 ---
 
@@ -401,6 +409,10 @@ veilguard-extension/
 │   └── content-script.js      # Bridge relay + DOM rehydration
 ├── page/
 │   └── bridge.js              # Main-world fetch/XHR/WS interceptor
+├── chat/                      # Private Chat (offline AI chatbot)
+│   ├── chat.html
+│   ├── chat.css
+│   └── chat.js
 ├── popup/                     # Extension popup UI
 ├── options/                   # Settings page
 ├── setup/                     # Setup guide page
