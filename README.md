@@ -60,6 +60,20 @@
 
 ## 🚀 Complete Setup Guide
 
+### Step 0: Download the Extension
+
+**Option A — Clone with Git (Recommended):**
+
+```bash
+git clone https://github.com/YashvardhanATRgithub/veilguard-extension.git
+```
+
+**Option B — Download ZIP:**
+
+Go to [**github.com/YashvardhanATRgithub/veilguard-extension**](https://github.com/YashvardhanATRgithub/veilguard-extension) → click the green **"Code"** button → **"Download ZIP"** → extract the folder.
+
+---
+
 ### Prerequisites
 
 - **Google Chrome** (or any Chromium-based browser like Edge, Brave, Arc)
