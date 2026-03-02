@@ -1,0 +1,12 @@
+{
+  "description": "Rehydrate multiple fake tokens with overlap-safe longest match replacement.",
+  "segments": [
+    "User IDs: redacted_1234 and redacted_12. Contact at jordan.reed42@example.test"
+  ],
+  "map": {
+    "redacted_12": "TOKEN_B",
+    "redacted_1234": "TOKEN_A",
+    "jordan.reed42@example.test": "john.doe@acme.com"
+  },
+  "expected": "User IDs: TOKEN_A and TOKEN_B. Contact at john.doe@acme.com"
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Assistant stream split across text segments containing one fake person token.",
+  "segments": [
+    "Thanks ",
+    "Avery",
+    " Sto",
+    "ne, here's what I found."
+  ],
+  "map": {
+    "Avery Stone": "Jane Doe"
+  },
+  "expected": "Thanks Jane Doe, here's what I found."
+}

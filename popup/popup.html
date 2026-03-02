@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeilGuard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+  <div class="popup-container">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-row">
+        <div class="shield-icon" id="shieldIcon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path class="shield-check" d="M9 12l2 2 4-4" stroke-dasharray="10" stroke-dashoffset="0" />
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>VeilGuard</h1>
+          <p class="tagline">AI Privacy Shield</p>
+        </div>
+      </div>
+      <div class="connection-badge" id="connectionBadge">
+        <span class="pulse-dot"></span>
+        <span class="badge-text" id="connectionText">Checking…</span>
+      </div>
+    </header>
+
+    <!-- Main Toggle -->
+    <div class="toggle-card" id="toggleCard">
+      <div class="toggle-info">
+        <span class="toggle-label">Privacy Protection</span>
+        <span class="toggle-status" id="toggleStatus">Disabled</span>
+      </div>
+      <label class="toggle-switch">
+        <input id="enabled" type="checkbox" />
+        <span class="toggle-track">
+          <span class="toggle-thumb"></span>
+        </span>
+      </label>
+    </div>
+
+    <!-- Setup Progress (shown during enable) -->
+    <div class="progress-section hidden" id="progressSection">
+      <div class="progress-step" id="stepOllama">
+        <span class="step-icon" id="stepOllamaIcon">⏳</span>
+        <span class="step-text">Connecting to Ollama…</span>
+      </div>
+      <div class="progress-step" id="stepModel">
+        <span class="step-icon" id="stepModelIcon">⏳</span>
+        <span class="step-text">Loading model into memory…</span>
+      </div>
+      <div class="progress-step" id="stepReady">
+        <span class="step-icon" id="stepReadyIcon">⏳</span>
+        <span class="step-text">Ready to protect!</span>
+      </div>
+    </div>
+
+    <!-- Setup Guide Link (shown when Ollama not found) -->
+    <div class="setup-banner hidden" id="setupGuide">
+      <div class="banner-icon">⚠️</div>
+      <div class="banner-text">
+        <span class="banner-title">Ollama not detected</span>
+        <span class="banner-sub">Follow the setup guide to install and start Ollama</span>
+      </div>
+      <a href="../setup/setup.html" target="_blank" rel="noopener" class="banner-btn">Setup Guide →</a>
+    </div>
+
+    <!-- Stats Row (shown when enabled) -->
+    <div class="stats-row hidden" id="statsSection">
+      <div class="stat-card">
+        <div class="stat-value" id="statRedacted">0</div>
+        <div class="stat-label">Redacted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statRequests">0</div>
+        <div class="stat-label">Requests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statBlocked">0</div>
+        <div class="stat-label">Blocked</div>
+      </div>
+    </div>
+
+    <!-- Quick Info -->
+    <div class="info-section" id="infoSection">
+      <div class="info-row">
+        <span class="info-label">Model</span>
+        <select class="model-select" id="modelSelect">
+          <option value="">Loading…</option>
+        </select>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Error Policy</span>
+        <span class="info-value" id="displayPolicy">—</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <a href="../options/options.html" target="_blank" rel="noopener" class="footer-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        Settings &amp; Diagnostics
+      </a>
+      <span class="version">v0.1.0</span>
+    </footer>
+
+    <p id="status" class="save-toast"></p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeilGuard — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="bg-gradient"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-left">
+        <div class="header-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+        <div>
+          <h1>VeilGuard Settings</h1>
+          <p class="header-sub">Configure your AI privacy shield</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="connection-pill" id="connectionPill">
+          <span class="conn-dot"></span>
+          <span id="connectionLabel">Checking…</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Two Column Layout -->
+    <div class="grid-layout">
+
+      <!-- LEFT COLUMN -->
+      <div class="column">
+
+        <!-- LLM Configuration -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon blue">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <div>
+              <h2>LLM Configuration</h2>
+              <p class="card-desc">Connect to your local AI model for privacy redaction</p>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Endpoint URL</span>
+                <span class="field-hint">Where VeilGuard sends text for redaction</span>
+              </div>
+              <input id="localLlmEndpoint" type="text" spellcheck="false" class="input mono"
+                placeholder="http://127.0.0.1:8787/api/chat" />
+            </label>
+
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Model Name</span>
+                <span class="field-hint">The Ollama model used for detecting sensitive data</span>
+              </div>
+              <select id="localLlmModel" class="input">
+                <option value="">Loading models…</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Timeout</span>
+                <span class="field-hint">Max wait time (ms) before giving up on a redaction request</span>
+              </div>
+              <input id="localLlmTimeoutMs" type="number" min="1000" max="60000" step="500" class="input" />
+            </label>
+
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Error Policy</span>
+                <span class="field-hint">What happens if the LLM fails to respond</span>
+              </div>
+              <select id="failPolicy" class="input">
+                <option value="block">🛑 Block — Don't send the message (safest)</option>
+                <option value="pass">⚡ Pass — Send unredacted (risky but uninterrupted)</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <!-- Runtime Limits -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon purple">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20V10M18 20V4M6 20v-4" />
+              </svg>
+            </div>
+            <div>
+              <h2>Runtime Limits</h2>
+              <p class="card-desc">Fine-tune performance and memory usage</p>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Session TTL</span>
+                <span class="field-hint">How long (ms) to remember redaction mappings per tab</span>
+              </div>
+              <input id="ttlMs" type="number" min="60000" step="60000" class="input" />
+            </label>
+
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Max Payload Size</span>
+                <span class="field-hint">Max characters scanned per request. Larger = more thorough, slower</span>
+              </div>
+              <input id="maxPayloadChars" type="number" min="20000" step="10000" class="input" />
+            </label>
+
+            <label class="field">
+              <div class="field-header">
+                <span class="field-label">Session Memory Cap</span>
+                <span class="field-hint">Approximate max bytes stored per session for redaction mappings</span>
+              </div>
+              <input id="maxSessionBytesApprox" type="number" min="50000" step="50000" class="input" />
+            </label>
+
+            <div class="field-row">
+              <label class="field half">
+                <div class="field-header">
+                  <span class="field-label">Max Sessions</span>
+                  <span class="field-hint">Concurrent tab sessions</span>
+                </div>
+                <input id="maxSessions" type="number" min="10" step="10" class="input" />
+              </label>
+
+              <label class="field half">
+                <div class="field-header">
+                  <span class="field-label">Max Mappings</span>
+                  <span class="field-hint">Redaction entries per session</span>
+                </div>
+                <input id="maxMappingsPerSession" type="number" min="10" step="10" class="input" />
+              </label>
+            </div>
+
+            <label class="field-toggle">
+              <div>
+                <span class="field-label">Debug Logging</span>
+                <span class="field-hint">Log detailed operational data to browser console</span>
+              </div>
+              <label class="toggle-switch">
+                <input id="debug" type="checkbox" />
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="column">
+
+        <!-- Operational Metrics -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon green">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <div>
+              <h2>Operational Metrics</h2>
+              <p class="card-desc">Aggregate performance data — no sensitive text is stored</p>
+            </div>
+            <div class="card-actions">
+              <button id="refreshMetrics" class="btn-icon" title="Refresh">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6" />
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                </svg>
+              </button>
+              <button id="resetMetrics" class="btn-icon danger" title="Reset all metrics">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div id="metrics" class="metrics-container"></div>
+        </section>
+
+        <!-- Debug Events -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon orange">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+            </div>
+            <div>
+              <h2>Event Log</h2>
+              <p class="card-desc">Non-PII operational trace for debugging adapter selection</p>
+            </div>
+            <div class="card-actions">
+              <button id="refreshEvents" class="btn-icon" title="Refresh">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6" />
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                </svg>
+              </button>
+              <button id="clearEvents" class="btn-icon danger" title="Clear all events">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div id="events" class="events-container"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+      <p class="save-hint">Changes are applied when you click Save</p>
+      <div class="save-actions">
+        <span id="status" class="save-status"></span>
+        <button id="resetDefaults" class="btn-reset" title="Reset all settings to defaults">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+          </svg>
+          Reset Defaults
+        </button>
+        <button id="save" class="btn-save">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+{
+  "threadId": "conv-generic-1",
+  "messages": [
+    {
+      "role": "assistant",
+      "content": "Assistant text should be left alone."
+    },
+    {
+      "role": "user",
+      "content": "my name is Alice Johnson and my api key is sk-BBBBBBBBBBBBBBBBBBBB"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Long segmented response with multiple repeated replacements.",
+  "segments": [
+    "Hello ",
+    "Avery Stone",
+    ". ",
+    "Avery Stone",
+    " requested updates for Northstar Labs. ",
+    "Please confirm with Avery Stone"
+  ],
+  "map": {
+    "Avery Stone": "Jane Doe",
+    "Northstar Labs": "Acme Corp"
+  },
+  "expected": "Hello Jane Doe. Jane Doe requested updates for Acme Corp. Please confirm with Jane Doe"
+}

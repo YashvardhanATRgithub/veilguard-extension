@@ -1,0 +1,529 @@
+/* ── VeilGuard Setup Guide – Premium Theme ── */
+:root {
+    --bg-page: #080c16;
+    --bg-card: rgba(255, 255, 255, 0.03);
+    --bg-input: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hover: rgba(255, 255, 255, 0.12);
+    --text-primary: #f0f2f5;
+    --text-secondary: #8b95a8;
+    --text-muted: #5a6478;
+    --accent: #60a5fa;
+    --green: #34d399;
+    --red: #f87171;
+    --orange: #fbbf24;
+    --radius: 14px;
+    --radius-sm: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+
+.bg-gradient {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 20% 10%, rgba(96, 165, 250, 0.06), transparent),
+        radial-gradient(ellipse 500px 400px at 80% 80%, rgba(167, 139, 250, 0.04), transparent);
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── Header ── */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.04));
+    border: 1px solid rgba(96, 165, 250, 0.15);
+    color: var(--accent);
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f0f2f5, #a0aec0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ── Status Panel ── */
+.status-panel {
+    padding: 20px;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.status-panel h2 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.status-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: -8px;
+}
+
+.status-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.check-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease;
+}
+
+.check-row.pass {
+    border-color: rgba(52, 211, 153, 0.2);
+}
+
+.check-row.fail {
+    border-color: rgba(248, 113, 113, 0.15);
+}
+
+.check-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.check-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.check-label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.check-detail {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.check-row.pass .check-detail {
+    color: var(--green);
+}
+
+.check-row.fail .check-detail {
+    color: var(--red);
+}
+
+.btn-recheck {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: all 0.2s ease;
+}
+
+.btn-recheck:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+/* ── Tabs ── */
+.platform-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tab:hover {
+    color: var(--text-secondary);
+}
+
+.tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.tab svg {
+    opacity: 0.7;
+}
+
+.tab.active svg {
+    opacity: 1;
+}
+
+.tab-content {
+    display: none;
+    padding: 24px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ── Steps ── */
+.guide-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.guide-step::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: -16px;
+    width: 1px;
+    background: var(--border);
+}
+
+.guide-step:last-child::before {
+    display: none;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.05));
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.step-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.step-body h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.step-body p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ── Command Blocks ── */
+.cmd-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+}
+
+.cmd-block code {
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    flex: 1;
+    word-break: break-all;
+}
+
+.copy-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+.copy-btn.copied {
+    color: var(--green);
+    border-color: rgba(52, 211, 153, 0.3);
+}
+
+/* ── Results ── */
+.result-note {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    padding: 8px 0;
+}
+
+.result-good {
+    color: var(--green);
+}
+
+.result-bad {
+    color: var(--red);
+    opacity: 0.8;
+}
+
+.result-note code {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+/* ── Method Cards ── */
+.method-card {
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.method-tag {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+
+.method-tag.recommended {
+    background: rgba(52, 211, 153, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.method-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.method-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(96, 165, 250, 0.05));
+    border: 1px solid rgba(96, 165, 250, 0.15);
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+}
+
+.download-link:hover {
+    background: rgba(96, 165, 250, 0.15);
+    border-color: rgba(96, 165, 250, 0.25);
+}
+
+.note {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ── Troubleshooting ── */
+.troubleshoot-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.troubleshoot-section h2 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.faq-item {
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.faq-item[open] {
+    border-color: var(--border-hover);
+}
+
+.faq-item summary {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.faq-item summary::before {
+    content: '▸';
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.faq-item[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item p {
+    padding: 0 16px 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.faq-item code {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+/* ── Footer ── */
+.guide-footer {
+    padding-top: 8px;
+}
+
+.back-link {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--accent);
+}

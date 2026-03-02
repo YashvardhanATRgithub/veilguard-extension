@@ -1,0 +1,12 @@
+{
+  "conversation_id": "conv-claude-2",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "type": "text", "text": "My address is 900 Market Street." },
+        { "type": "tool_use", "id": "toolu_1", "name": "calendar_lookup", "input": { "email": "dont-change@tool.local" } }
+      ]
+    }
+  ]
+}

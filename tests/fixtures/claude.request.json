@@ -1,0 +1,23 @@
+{
+  "conversation_id": "conv-claude-1",
+  "messages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "This assistant seed should remain unchanged: ghp_123456789012345678901234567890123456"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "My SSN is 123-45-6789 and I live at 123 Main Street."
+        }
+      ]
+    }
+  ]
+}

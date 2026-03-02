@@ -1,0 +1,17 @@
+{
+  "conversation_id": "conv-chatgpt-2",
+  "messages": [
+    {
+      "id": "u1",
+      "author": { "role": "user" },
+      "content": {
+        "content_type": "multimodal_text",
+        "parts": [
+          { "type": "text", "text": "Email me at ava@example.com" },
+          { "type": "image_url", "image_url": { "url": "https://cdn.example.com/photo.png" } },
+          "my api key is sk-CCCCCCCCCCCCCCCCCCCC"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VeilGuard — Setup Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="setup.css" />
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="M9 12l2 2 4-4" />
+                    </svg>
+                </div>
+                <div>
+                    <h1>Setup Guide</h1>
+                    <p class="header-sub">Get VeilGuard running in a few minutes</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Live Status -->
+        <section class="status-panel">
+            <h2>System Status</h2>
+            <p class="status-hint">VeilGuard checks these automatically. All must be green to enable protection.</p>
+            <div class="status-checks">
+                <div class="check-row" id="checkOllama">
+                    <span class="check-icon">⏳</span>
+                    <div class="check-info">
+                        <span class="check-label">Ollama Server</span>
+                        <span class="check-detail" id="checkOllamaDetail">Checking…</span>
+                    </div>
+                </div>
+                <div class="check-row" id="checkModel">
+                    <span class="check-icon">⏳</span>
+                    <div class="check-info">
+                        <span class="check-label">AI Model</span>
+                        <span class="check-detail" id="checkModelDetail">Checking…</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-recheck" id="recheckBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6" />
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                </svg>
+                Re-check
+            </button>
+        </section>
+
+        <!-- Platform Tabs -->
+        <section class="platform-section">
+            <div class="tab-bar">
+                <button class="tab active" data-tab="mac">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.02-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.81-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                    </svg>
+                    macOS
+                </button>
+                <button class="tab" data-tab="windows">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
+                    </svg>
+                    Windows
+                </button>
+                <button class="tab" data-tab="linux">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 0 0-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.368 1.884 1.43.868.07 1.723-.26 2.456-.594.733-.34 1.455-.54 1.947-.467.5.073.9.477 1.07.756.39.863-.47 1.694-.405 2.375.065.683.398 1.064.9 1.303.5.236 1.12.367 1.642.368.126 0 .245-.014.345-.04.531-.141.671-.576.716-1.052.029-.321-.007-.7.016-1.021.16-.4.504-.715.89-.801.386-.085.747-.003.945.151.203.159.309.336.345.52.039.183-.044.283-.006.434.038.152.143.268.345.27.133 0 .262-.057.376-.144a.882.882 0 0 0 .269-.379c.06-.166.06-.37-.002-.6a1.62 1.62 0 0 0-.334-.525c-.298-.322-.762-.486-1.244-.458-.358.024-.718.195-1.01.479-.288.252-.484.532-.574.825-.093.303-.127.575-.152.87-.024.304-.025.614-.058.836-.034.223-.124.35-.292.397-.168.047-.41.001-.676-.067-.532-.141-1.124-.421-1.342-.754-.11-.166-.119-.33-.07-.517.049-.189.16-.407.28-.657.12-.25.24-.524.29-.885.05-.361.003-.756-.253-1.156-.255-.4-.673-.737-1.226-.823-.554-.086-1.173.087-1.868.41-.695.323-1.437.536-2.01.56-.57.024-.945-.2-1.146-.687-.062-.141-.093-.333-.08-.437.012-.103.07-.19.074-.267 0-.077-.048-.197-.084-.35-.035-.149-.09-.362-.068-.624.108-1.286.855-2.21 1.754-3.007.901-.804 1.988-1.508 2.764-2.488.775-.981 1.193-2.26 1.11-3.905-.065-1.302-.577-2.46-1.254-3.346a7.54 7.54 0 0 0-.735-.77c-.398-.34-.672-.527-.805-.648-.133-.12-.139-.214-.027-.313.116-.101.399-.275.598-.527.2-.253.38-.57.363-1.006-.019-.463-.298-.798-.518-1.068-.22-.27-.427-.47-.527-.692-.15-.338-.043-.89.223-1.308.21-.295.435-.432.636-.37z" />
+                    </svg>
+                    Linux
+                </button>
+            </div>
+
+            <!-- macOS -->
+            <div class="tab-content active" id="tab-mac">
+                <!-- Step 1: Check -->
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-body">
+                        <h3>Check if Ollama is installed</h3>
+                        <p>Open <strong>Terminal</strong> and run:</p>
+                        <div class="cmd-block">
+                            <code>which ollama</code>
+                            <button class="copy-btn" data-cmd="which ollama">Copy</button>
+                        </div>
+                        <div class="result-note">
+                            <span class="result-good">✅ If it shows a path like <code>/usr/local/bin/ollama</code> →
+                                Ollama is installed. Skip to Step 3.</span>
+                            <span class="result-bad">❌ If it says <code>ollama not found</code> → Continue to Step
+                                2.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Install -->
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-body">
+                        <h3>Install Ollama</h3>
+                        <p>Choose one of these methods:</p>
+
+                        <div class="method-card">
+                            <div class="method-tag recommended">Recommended</div>
+                            <h4>Official Installer</h4>
+                            <p>Download from the official website:</p>
+                            <a href="https://ollama.com/download" target="_blank" class="download-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                ollama.com/download
+                            </a>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Via Homebrew</h4>
+                            <div class="cmd-block">
+                                <code>brew install ollama</code>
+                                <button class="copy-btn" data-cmd="brew install ollama">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Via curl</h4>
+                            <div class="cmd-block">
+                                <code>curl -fsSL https://ollama.com/install.sh | sh</code>
+                                <button class="copy-btn"
+                                    data-cmd="curl -fsSL https://ollama.com/install.sh | sh">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Start & Auto-launch -->
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-body">
+                        <h3>Configure & Auto-start Ollama</h3>
+                        <p>VeilGuard needs Ollama to allow browser extension requests. Run these <strong>once</strong> —
+                            Ollama will auto-start on every boot with the right settings.</p>
+
+                        <div class="method-card">
+                            <div class="method-tag recommended">If installed via Homebrew</div>
+                            <p>1. Add the environment variable to your shell (one-time):</p>
+                            <div class="cmd-block">
+                                <code>echo 'export OLLAMA_ORIGINS="*"' >> ~/.zshrc && source ~/.zshrc</code>
+                                <button class="copy-btn"
+                                    data-cmd="echo 'export OLLAMA_ORIGINS=&quot;*&quot;' >> ~/.zshrc && source ~/.zshrc">Copy</button>
+                            </div>
+                            <p>2. Enable auto-start as a background service:</p>
+                            <div class="cmd-block">
+                                <code>brew services start ollama</code>
+                                <button class="copy-btn" data-cmd="brew services start ollama">Copy</button>
+                            </div>
+                            <p class="note">Ollama will now start automatically on every login. No terminal needed.</p>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>If installed via .dmg (desktop app)</h4>
+                            <p>1. Set the env var for GUI apps (one-time):</p>
+                            <div class="cmd-block">
+                                <code>launchctl setenv OLLAMA_ORIGINS "*"</code>
+                                <button class="copy-btn" data-cmd='launchctl setenv OLLAMA_ORIGINS "*"'>Copy</button>
+                            </div>
+                            <p>2. Open <strong>Ollama app</strong> → click menu bar icon → <strong>Preferences</strong>
+                                → enable <strong>"Launch at login"</strong>.</p>
+                            <p>3. Restart the Ollama app to apply the env var.</p>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Manual / one-time start</h4>
+                            <p>If you just want to start it now without auto-launch:</p>
+                            <div class="cmd-block">
+                                <code>OLLAMA_ORIGINS='*' ollama serve</code>
+                                <button class="copy-btn" data-cmd="OLLAMA_ORIGINS='*' ollama serve">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="result-note">
+                            <span class="result-good">✅ Ollama should now be running. Verify:
+                                <code>curl http://127.0.0.1:11434/</code></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Pull model -->
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-body">
+                        <h3>Pull the AI model</h3>
+                        <p>Open a <strong>new</strong> Terminal tab and run:</p>
+                        <div class="cmd-block">
+                            <code>ollama pull qwen2.5:1.5b</code>
+                            <button class="copy-btn" data-cmd="ollama pull qwen2.5:1.5b">Copy</button>
+                        </div>
+                        <p class="note">This downloads ~1GB. Once done, click <strong>Re-check</strong> above — both
+                            checks should turn green!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Windows -->
+            <div class="tab-content" id="tab-windows">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-body">
+                        <h3>Check if Ollama is installed</h3>
+                        <p>Open <strong>PowerShell</strong> or <strong>Command Prompt</strong> and run:</p>
+                        <div class="cmd-block">
+                            <code>ollama --version</code>
+                            <button class="copy-btn" data-cmd="ollama --version">Copy</button>
+                        </div>
+                        <div class="result-note">
+                            <span class="result-good">✅ If it shows a version number → Ollama is installed. Skip to Step
+                                3.</span>
+                            <span class="result-bad">❌ If it says <code>'ollama' is not recognized</code> → Continue to
+                                Step 2.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-body">
+                        <h3>Install Ollama</h3>
+                        <div class="method-card">
+                            <div class="method-tag recommended">Recommended</div>
+                            <h4>Official Installer</h4>
+                            <p>Download the Windows installer from:</p>
+                            <a href="https://ollama.com/download/windows" target="_blank" class="download-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                ollama.com/download/windows
+                            </a>
+                            <p class="note">Run the installer and follow the prompts. Ollama will be added to your
+                                system PATH.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-body">
+                        <h3>Configure & Auto-start Ollama</h3>
+                        <p>VeilGuard needs Ollama to allow browser extension requests. Set this up <strong>once</strong>
+                            and Ollama will auto-start with the right settings.</p>
+
+                        <div class="method-card">
+                            <div class="method-tag recommended">Permanent setup</div>
+                            <h4>Add system environment variable</h4>
+                            <p>1. Open <strong>Start menu</strong> → search <strong>"Environment Variables"</strong> →
+                                click <strong>"Edit the system environment variables"</strong></p>
+                            <p>2. Click <strong>"Environment Variables"</strong> button</p>
+                            <p>3. Under <strong>System variables</strong>, click <strong>New</strong>:</p>
+                            <p style="margin-left:16px">Variable name: <code>OLLAMA_ORIGINS</code><br />Variable value:
+                                <code>*</code></p>
+                            <p>4. Click OK to save. Restart the <strong>Ollama</strong> system tray app.</p>
+                            <p class="note">Ollama auto-starts with Windows by default via the system tray. This env var
+                                ensures VeilGuard can communicate with it.</p>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Quick start (one-time, not persistent)</h4>
+                            <p>Or start from PowerShell for this session only:</p>
+                            <div class="cmd-block">
+                                <code>$env:OLLAMA_ORIGINS='*'; ollama serve</code>
+                                <button class="copy-btn" data-cmd="$env:OLLAMA_ORIGINS='*'; ollama serve">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-body">
+                        <h3>Pull the AI model</h3>
+                        <p>Open a <strong>new</strong> PowerShell window and run:</p>
+                        <div class="cmd-block">
+                            <code>ollama pull qwen2.5:1.5b</code>
+                            <button class="copy-btn" data-cmd="ollama pull qwen2.5:1.5b">Copy</button>
+                        </div>
+                        <p class="note">This downloads ~1GB. Once done, click <strong>Re-check</strong> above!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linux -->
+            <div class="tab-content" id="tab-linux">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-body">
+                        <h3>Check if Ollama is installed</h3>
+                        <p>Open a terminal and run:</p>
+                        <div class="cmd-block">
+                            <code>which ollama && ollama --version</code>
+                            <button class="copy-btn" data-cmd="which ollama && ollama --version">Copy</button>
+                        </div>
+                        <div class="result-note">
+                            <span class="result-good">✅ If it shows a path and version → installed. Skip to Step
+                                3.</span>
+                            <span class="result-bad">❌ If it says <code>command not found</code> → Continue to Step
+                                2.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-body">
+                        <h3>Install Ollama</h3>
+                        <div class="method-card">
+                            <div class="method-tag recommended">Recommended</div>
+                            <h4>Official Install Script</h4>
+                            <div class="cmd-block">
+                                <code>curl -fsSL https://ollama.com/install.sh | sh</code>
+                                <button class="copy-btn"
+                                    data-cmd="curl -fsSL https://ollama.com/install.sh | sh">Copy</button>
+                            </div>
+                            <p class="note">This installs Ollama and sets it up as a systemd service.</p>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Manual Download</h4>
+                            <a href="https://ollama.com/download/linux" target="_blank" class="download-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                                </svg>
+                                ollama.com/download/linux
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-body">
+                        <h3>Configure & Auto-start Ollama</h3>
+                        <p>VeilGuard needs Ollama to allow browser extension requests. Set this up <strong>once</strong>
+                            and Ollama will auto-start on boot.</p>
+
+                        <div class="method-card">
+                            <div class="method-tag recommended">Permanent setup with systemd</div>
+                            <p>1. Add the CORS override to the Ollama service:</p>
+                            <div class="cmd-block">
+                                <code>sudo systemctl edit ollama</code>
+                                <button class="copy-btn" data-cmd="sudo systemctl edit ollama">Copy</button>
+                            </div>
+                            <p>2. In the editor, add these lines and save:</p>
+                            <div class="cmd-block">
+                                <code>[Service]<br/>Environment="OLLAMA_ORIGINS=*"</code>
+                                <button class="copy-btn"
+                                    data-cmd='[Service]&#10;Environment="OLLAMA_ORIGINS=*"'>Copy</button>
+                            </div>
+                            <p>3. Restart and enable auto-start:</p>
+                            <div class="cmd-block">
+                                <code>sudo systemctl restart ollama && sudo systemctl enable ollama</code>
+                                <button class="copy-btn"
+                                    data-cmd="sudo systemctl restart ollama && sudo systemctl enable ollama">Copy</button>
+                            </div>
+                            <p class="note">Ollama will now auto-start on every boot with the right permissions.</p>
+                        </div>
+
+                        <div class="method-card">
+                            <h4>Quick start (one-time, not persistent)</h4>
+                            <div class="cmd-block">
+                                <code>OLLAMA_ORIGINS='*' ollama serve</code>
+                                <button class="copy-btn" data-cmd="OLLAMA_ORIGINS='*' ollama serve">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-body">
+                        <h3>Pull the AI model</h3>
+                        <p>Open a <strong>new</strong> terminal and run:</p>
+                        <div class="cmd-block">
+                            <code>ollama pull qwen2.5:1.5b</code>
+                            <button class="copy-btn" data-cmd="ollama pull qwen2.5:1.5b">Copy</button>
+                        </div>
+                        <p class="note">This downloads ~1GB. Once done, click <strong>Re-check</strong> above!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section class="troubleshoot-section">
+            <h2>Troubleshooting</h2>
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>Ollama is installed but shows "Offline"</summary>
+                    <p>Ollama needs to be <strong>running</strong> as a background service. Just having it installed is
+                        not enough. Start it using the instructions in Step 3 above for your OS.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Model pull is very slow</summary>
+                    <p>The <code>qwen2.5:1.5b</code> model is about 1GB. On a slow connection this may take a few
+                        minutes. You can track progress in your terminal.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Extension still shows "Offline" after starting Ollama</summary>
+                    <p>Wait ~10 seconds or click <strong>Re-check</strong>. If it still shows offline, ensure Ollama is
+                        running on the default port <code>11434</code>. Check by running:
+                        <code>curl http://127.0.0.1:11434/</code> — it should respond with "Ollama is running".
+                    </p>
+                </details>
+                <details class="faq-item">
+                    <summary>"Model load failed" or 403 errors</summary>
+                    <p>This means Ollama is blocking requests from the browser extension. You must start Ollama with
+                        <code>OLLAMA_ORIGINS='*'</code> to allow cross-origin requests. See Step 3 in your OS tab above.
+                    </p>
+                </details>
+                <details class="faq-item">
+                    <summary>Can I use a different model?</summary>
+                    <p>Yes! Pull any model with <code>ollama pull model-name</code> and select it from the dropdown in
+                        the VeilGuard popup. Larger models are more accurate but use more RAM and are slower.</p>
+                </details>
+            </div>
+        </section>
+
+        <footer class="guide-footer">
+            <a href="../popup/popup.html" class="back-link">← Back to VeilGuard</a>
+        </footer>
+    </div>
+
+    <script src="setup.js"></script>
+</body>
+
+</html>

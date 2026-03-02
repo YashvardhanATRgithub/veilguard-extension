@@ -1,0 +1,21 @@
+{
+  "conversation_id": "conv-chatgpt-1",
+  "messages": [
+    {
+      "id": "sys-1",
+      "author": { "role": "system" },
+      "content": {
+        "content_type": "text",
+        "parts": ["Do not modify sk-AAAAAAAAAAAAAAAAAAAA in this system directive."]
+      }
+    },
+    {
+      "id": "usr-1",
+      "author": { "role": "user" },
+      "content": {
+        "content_type": "text",
+        "parts": ["my name is Jane Doe and my email is jane.doe@acme.com. Call me at +1 (415) 555-0199."]
+      }
+    }
+  ]
+}

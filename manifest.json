@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "VeilGuard Privacy Relay",
+  "version": "0.1.0",
+  "description": "Intercepts AI chat prompts, masks sensitive values, and rehydrates assistant replies.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "VeilGuard",
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content/content-script.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page/bridge.js"],
+      "matches": ["https://*/*", "http://*/*"]
+    }
+  ]
+}

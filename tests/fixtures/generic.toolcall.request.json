@@ -1,0 +1,15 @@
+{
+  "threadId": "conv-generic-2",
+  "messages": [
+    {
+      "role": "user",
+      "content": "my name is Noah Reed",
+      "tool_calls": [
+        {
+          "name": "search_docs",
+          "arguments": "email=user@toolcall.local"
+        }
+      ]
+    }
+  ]
+}

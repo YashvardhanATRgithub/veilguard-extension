@@ -1,0 +1,19 @@
+{
+  "name": "veilguard-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check:syntax": "node scripts/release/check-syntax.js",
+    "compat:matrix": "node scripts/compat/generate-matrix.js",
+    "compat:matrix:write": "node scripts/compat/generate-matrix.js --write",
+    "preflight": "node scripts/release/preflight.js",
+    "release:build": "node scripts/release/build-zip.js",
+    "release:build:quick": "node scripts/release/build-zip.js --skip-preflight",
+    "corpus:import": "node scripts/corpus/import-har.js"
+  },
+  "dependencies": {
+    "jsdom": "^28.1.0"
+  }
+}

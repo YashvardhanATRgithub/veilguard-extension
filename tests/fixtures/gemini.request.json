@@ -1,0 +1,21 @@
+{
+  "conversationId": "conv-gemini-1",
+  "contents": [
+    {
+      "role": "model",
+      "parts": [
+        {
+          "text": "Model content should remain unchanged: john@model.test"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Please email me at bob@example.com and charge 4111 1111 1111 1111."
+        }
+      ]
+    }
+  ]
+}
