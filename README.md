@@ -4,6 +4,10 @@
 
 **Your data never leaves your device.** VeilGuard uses [Ollama](https://ollama.com) to run a small language model locally that identifies and masks PII in real-time.
 
+<p align="center">
+  <img src="screenshots/veilguard_walkthrough.gif" alt="VeilGuard Walkthrough" width="800" />
+</p>
+
 ---
 
 ## 📸 Screenshots
