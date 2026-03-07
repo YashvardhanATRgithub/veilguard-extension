@@ -182,17 +182,34 @@ function resolveOllamaBase(s) {
 }
 
 async function ollamaLoadModel(model) {
-  // Just verify the model exists via /api/show (lightweight, no GPU load)
   const base = resolveOllamaBase(settings);
-  const res = await fetch(base + '/api/show', {
+
+  // Step 1: Verify the model exists via /api/show (lightweight metadata check).
+  const showRes = await fetch(base + '/api/show', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ name: model }),
     signal: AbortSignal.timeout(10000)
   });
-  if (!res.ok) throw new Error(`ollama_model_not_found_${res.status}`);
-  const data = await res.json();
-  if (!data.modelfile && !data.template) throw new Error('ollama_model_invalid');
+  if (!showRes.ok) throw new Error(`ollama_model_not_found_${showRes.status}`);
+  const showData = await showRes.json();
+  if (!showData.modelfile && !showData.template) throw new Error('ollama_model_invalid');
+
+  // Step 2: Actually load the model into memory by sending a no-op generate
+  // request. This forces Ollama to allocate GPU/RAM for the model. Use a
+  // generous timeout because first-time loading on Windows can take 30-60s.
+  const loadRes = await fetch(base + '/api/generate', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      model,
+      prompt: '',
+      stream: false,
+      keep_alive: '5m'
+    }),
+    signal: AbortSignal.timeout(60000)
+  });
+  if (!loadRes.ok) throw new Error(`ollama_load_failed_${loadRes.status}`);
 }
 
 async function ollamaUnloadModel(model) {
