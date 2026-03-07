@@ -139,7 +139,7 @@ async function enableSequence() {
   // Did we get a CORS 403 block from Ollama? 
   // (ollamaFetch sets this flag if it gets a 403)
   const { veilguard_cors_blocked } = await chrome.storage.local.get('veilguard_cors_blocked');
-  
+
   if (veilguard_cors_blocked) {
     setStep(stepModel, stepModelIcon, 'error');
     enabledEl.checked = false;
@@ -147,9 +147,9 @@ async function enableSequence() {
     updateVisualState(false);
     setupGuide.classList.remove('hidden');
     // Open setup page directly to the Windows tab 
-    document.getElementById('setupHint').innerHTML = `
-      <span style="color:var(--error); font-weight:600">Extension Blocked by Ollama (CORS)</span><br/><br/>
-      Please run the Windows Fix command in the setup guide.
+    setupGuide.querySelector('.banner-text').innerHTML = `
+      <span class="banner-title" style="color:var(--error)">Extension Blocked (CORS)</span>
+      <span class="banner-sub">Run the Windows Fix command in the setup guide.</span>
     `;
     setTimeout(() => progressSection.classList.add('hidden'), 500);
     return;
