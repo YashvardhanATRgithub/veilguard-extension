@@ -1,4 +1,5 @@
 import { cloneJson, findConversationId, getNormalizedRole, applyTransformToString } from './utils.js';
+import { prependInstruction } from '../privacy-instruction.js';
 
 function looksLikeChatGptSchema(payload) {
   if (!payload || typeof payload !== 'object') return false;
@@ -84,6 +85,37 @@ async function transformMessageContent(message, ctx) {
   return replacements;
 }
 
+function injectInstructionIntoLastUserMessage(messages) {
+  if (!Array.isArray(messages)) return;
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const role = getNormalizedRole(messages[i]);
+    if (role && role !== 'user' && role !== 'human') continue;
+
+    const msg = messages[i];
+    if (typeof msg.content === 'string') {
+      msg.content = prependInstruction(msg.content);
+      return;
+    }
+    if (msg.content && typeof msg.content === 'object' && Array.isArray(msg.content.parts)) {
+      for (let j = 0; j < msg.content.parts.length; j += 1) {
+        const part = msg.content.parts[j];
+        if (typeof part === 'string') {
+          msg.content.parts[j] = prependInstruction(part);
+          return;
+        }
+        if (part && typeof part === 'object' && typeof part.text === 'string') {
+          part.text = prependInstruction(part.text);
+          return;
+        }
+      }
+    }
+    if (msg.content && typeof msg.content === 'object' && typeof msg.content.text === 'string') {
+      msg.content.text = prependInstruction(msg.content.text);
+      return;
+    }
+  }
+}
+
 async function transformPayload(payload, ctx) {
   const out = cloneJson(payload);
   let replacements = 0;
@@ -110,6 +142,10 @@ async function transformPayload(payload, ctx) {
     const transformed = await applyTransformToString(out.input, ctx);
     out.input = transformed.value;
     replacements += transformed.replacements;
+  }
+
+  if (replacements > 0) {
+    injectInstructionIntoLastUserMessage(out.messages);
   }
 
   return { payload: out, replacements };

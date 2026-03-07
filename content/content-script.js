@@ -33,6 +33,12 @@
   let observer = null;
   let refreshTimer = null;
 
+  const PRIVACY_INSTRUCTION =
+    '[Privacy note: Some values in this message have been replaced with privacy ' +
+    'placeholders (e.g., PERSON_1, EMAIL_1) by a browser extension. Treat these ' +
+    'placeholders as real values and respond naturally \u2014 do not mention or ' +
+    'question the placeholders.]\n\n';
+
   let isApplying = false;
   let flushScheduled = false;
   const pendingContainers = new Set();
@@ -136,11 +142,18 @@
     if (nodes.length === 0) return;
 
     const segments = nodes.map((node) => node.textContent || '');
-    const combined = segments.join('');
+    let combined = segments.join('');
     if (!combined.trim()) return;
 
+    // Strip the privacy instruction so users never see it.
+    let instructionStripped = false;
+    if (combined.includes(PRIVACY_INSTRUCTION)) {
+      combined = combined.split(PRIVACY_INSTRUCTION).join('');
+      instructionStripped = true;
+    }
+
     const keys = Object.keys(fakeToRealMap || {}).sort((a, b) => b.length - a.length);
-    if (keys.length === 0) return;
+    if (keys.length === 0 && !instructionStripped) return;
 
     const replacements = [];
     for (const fake of keys) {

@@ -1,4 +1,5 @@
 import { cloneJson, findConversationId, applyTransformToString } from './utils.js';
+import { prependInstruction } from '../privacy-instruction.js';
 
 function looksLikeClaudeSchema(payload) {
   if (!payload || typeof payload !== 'object') return false;
@@ -54,6 +55,32 @@ async function transformContentBlocks(content, ctx) {
   return { content: next, replacements };
 }
 
+function injectInstructionIntoContent(content) {
+  if (typeof content === 'string') {
+    return prependInstruction(content);
+  }
+  if (Array.isArray(content)) {
+    for (let i = 0; i < content.length; i += 1) {
+      const block = content[i];
+      if (block && typeof block === 'object' && block.type === 'text' && typeof block.text === 'string') {
+        content[i] = { ...block, text: prependInstruction(block.text) };
+        return content;
+      }
+    }
+  }
+  return content;
+}
+
+function injectInstructionIntoLastUserMessage(messages) {
+  if (!Array.isArray(messages)) return;
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const role = typeof messages[i]?.role === 'string' ? messages[i].role.toLowerCase() : null;
+    if (role && role !== 'user' && role !== 'human') continue;
+    messages[i] = { ...messages[i], content: injectInstructionIntoContent(messages[i].content) };
+    return;
+  }
+}
+
 async function transformPayload(payload, ctx) {
   const out = cloneJson(payload);
   let replacements = 0;
@@ -90,6 +117,16 @@ async function transformPayload(payload, ctx) {
       const transformed = await transformContentBlocks(out.message.content, ctx);
       replacements += transformed.replacements;
       out.message = { ...out.message, content: transformed.content };
+    }
+  }
+
+  if (replacements > 0) {
+    injectInstructionIntoLastUserMessage(out.messages);
+    if (out.message && typeof out.message === 'object') {
+      const role = typeof out.message.role === 'string' ? out.message.role.toLowerCase() : 'user';
+      if (role === 'user' || role === 'human') {
+        out.message = { ...out.message, content: injectInstructionIntoContent(out.message.content) };
+      }
     }
   }
 

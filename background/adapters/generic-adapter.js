@@ -1,4 +1,5 @@
 import { cloneJson } from './utils.js';
+import { prependInstruction } from '../privacy-instruction.js';
 
 const CANDIDATE_KEYS = new Set([
   'prompt',
@@ -79,6 +80,35 @@ async function traverse(value, context, onString) {
   return output;
 }
 
+function injectInstructionIntoLastUserMessage(payload) {
+  if (!payload || typeof payload !== 'object') return;
+  const messages = payload.messages;
+  if (!Array.isArray(messages)) return;
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const msg = messages[i];
+    if (!msg || typeof msg !== 'object') continue;
+    const role = typeof msg.role === 'string' ? msg.role.toLowerCase() : null;
+    if (role && NON_USER_ROLES.has(role)) continue;
+    if (typeof msg.content === 'string') {
+      messages[i] = { ...msg, content: prependInstruction(msg.content) };
+      return;
+    }
+    if (typeof msg.text === 'string') {
+      messages[i] = { ...msg, text: prependInstruction(msg.text) };
+      return;
+    }
+  }
+
+  // Fallback: top-level prompt/input
+  if (typeof payload.prompt === 'string') {
+    payload.prompt = prependInstruction(payload.prompt);
+    return;
+  }
+  if (typeof payload.input === 'string') {
+    payload.input = prependInstruction(payload.input);
+  }
+}
+
 async function transformPayload(payload, ctx) {
   const out = cloneJson(payload);
   let replacements = 0;
@@ -89,6 +119,10 @@ async function transformPayload(payload, ctx) {
     replacements += transformed.replacements;
     return transformed.text;
   });
+
+  if (replacements > 0) {
+    injectInstructionIntoLastUserMessage(transformedPayload);
+  }
 
   return { payload: transformedPayload, replacements };
 }

@@ -1,4 +1,5 @@
 import { cloneJson, findConversationId, applyTransformToString } from './utils.js';
+import { prependInstruction } from '../privacy-instruction.js';
 
 function looksLikeGeminiSchema(payload) {
   if (!payload || typeof payload !== 'object') return false;
@@ -68,6 +69,25 @@ async function transformContents(contents, ctx) {
   return { contents: transformed, replacements };
 }
 
+function injectInstructionIntoContents(contents) {
+  if (!Array.isArray(contents)) return;
+  for (let i = contents.length - 1; i >= 0; i -= 1) {
+    const entry = contents[i];
+    if (!entry || typeof entry !== 'object') continue;
+    const role = typeof entry.role === 'string' ? entry.role.toLowerCase() : null;
+    if (role && role !== 'user') continue;
+    if (Array.isArray(entry.parts)) {
+      for (let j = 0; j < entry.parts.length; j += 1) {
+        const part = entry.parts[j];
+        if (part && typeof part === 'object' && typeof part.text === 'string') {
+          entry.parts[j] = { ...part, text: prependInstruction(part.text) };
+          return;
+        }
+      }
+    }
+  }
+}
+
 async function transformPayload(payload, ctx) {
   const out = cloneJson(payload);
   let replacements = 0;
@@ -86,6 +106,13 @@ async function transformPayload(payload, ctx) {
     const transformed = await applyTransformToString(out.prompt, ctx);
     out.prompt = transformed.value;
     replacements += transformed.replacements;
+  }
+
+  if (replacements > 0) {
+    injectInstructionIntoContents(out.contents);
+    if (out.generateContentRequest && typeof out.generateContentRequest === 'object') {
+      injectInstructionIntoContents(out.generateContentRequest.contents);
+    }
   }
 
   return { payload: out, replacements };
