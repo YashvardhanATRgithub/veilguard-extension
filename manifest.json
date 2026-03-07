@@ -4,12 +4,22 @@
   "version": "0.1.0",
   "description": "Intercepts AI chat prompts, masks sensitive values, and rehydrates assistant replies.",
   "permissions": [
-    "storage"
+    "storage",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "https://*/*",
     "http://*/*"
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ollama_headers",
+        "enabled": true,
+        "path": "rules/ollama-headers.json"
+      }
+    ]
+  },
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"

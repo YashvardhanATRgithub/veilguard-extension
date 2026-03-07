@@ -14,7 +14,8 @@ const INCLUDE_PATHS = [
   'page',
   'shared',
   'popup',
-  'options'
+  'options',
+  'rules'
 ];
 
 function run(command, args) {
@@ -124,7 +125,7 @@ function main() {
   }
 
   try {
-    run('bsdtar', ['-a', '-cf', zipPath, '-C', stageDir, '.']);
+    run('tar', ['-a', '-cf', zipPath, '-C', stageDir, '.']);
     writeReleaseManifest(version, zipPath, stageDir);
   } finally {
     fs.rmSync(stageDir, { recursive: true, force: true });

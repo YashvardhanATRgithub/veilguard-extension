@@ -113,6 +113,9 @@ async function enableSequence() {
   setupGuide.classList.add('hidden');
   enabledEl.disabled = true;
 
+  // Clear any stale CORS-blocked flag from a previous attempt.
+  await chrome.storage.local.remove('veilguard_cors_blocked').catch(() => { });
+
   // Step 1: Check Ollama
   setStep(stepOllama, stepOllamaIcon, 'active');
   setStep(stepModel, stepModelIcon, null);
