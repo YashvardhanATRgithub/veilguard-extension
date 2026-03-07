@@ -200,29 +200,17 @@ Download the Windows installer from: [ollama.com/download/windows](https://ollam
 
 Run the installer and follow the prompts. Ollama will be added to your system PATH automatically.
 
-#### Step 3: Configure & Auto-start Ollama
+#### Step 3: Fix Extension Block (CORS) & Auto-start
 
-VeilGuard needs Ollama to allow browser extension requests. Set this up **once** and Ollama will auto-start with the right settings.
+Ollama on Windows blocks browser extensions by default. **Run this command once** to fix it permanently. It will configure Ollama and restart it immediately.
 
-**Permanent setup (Recommended):**
-
-1. Open **Start menu** → search **"Environment Variables"** → click **"Edit the system environment variables"**
-2. Click the **"Environment Variables"** button
-3. Under **System variables**, click **New**:
-   - Variable name: `OLLAMA_ORIGINS`
-   - Variable value: `*`
-4. Click **OK** to save
-5. **Restart** the Ollama system tray app
-
-> Ollama auto-starts with Windows by default via the system tray. This env var ensures VeilGuard can communicate with it.
-
-**Quick start (one-time, not persistent):**
-
-Or start from PowerShell for this session only:
+**Run in PowerShell (Run as Administrator not required):**
 
 ```powershell
-$env:OLLAMA_ORIGINS='*'; ollama serve
+[Environment]::SetEnvironmentVariable("OLLAMA_ORIGINS", "chrome-extension://*,*", "Machine"); Stop-Process -Name "ollama app", "ollama" -Force -ErrorAction SilentlyContinue; Start-Sleep -s 1; Start-Process "$env:LOCALAPPDATA\Programs\Ollama\ollama app.exe"
 ```
+
+> This command: 1) Sets the required environment variable. 2) Closes Ollama. 3) Restarts Ollama with the new settings. Ollama will continue to auto-start with Windows using these settings.
 
 #### Step 4: Pull the AI model
 
@@ -474,7 +462,7 @@ npm run compat:matrix:write       # Write to docs/COMPATIBILITY_MATRIX.md
 | `failPolicy` | `block` | Block or pass requests on redaction failure |
 | `localLlmEndpoint` | `http://127.0.0.1:11434/api/chat` | Ollama API endpoint |
 | `localLlmModel` | `qwen2.5:1.5b` | Model for redaction |
-| `localLlmTimeoutMs` | `15000` | Request timeout |
+| `localLlmTimeoutMs` | `60000` | Request timeout |
 | `minEntityConfidence` | `0.7` | PII detection threshold |
 | `maxPayloadChars` | `1,000,000` | Skip payloads larger than this |
 
