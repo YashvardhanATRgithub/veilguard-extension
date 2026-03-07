@@ -16,17 +16,29 @@ function extractTextFromRequestBody(rawBody) {
   if (!payload || typeof payload !== 'object') return { text: '', hints: {} };
   if (!Array.isArray(payload.messages)) return { text: '', hints: {} };
 
+  // Extract detection hints from custom field (sent by local-llm-redactor.js)
+  const detectionHints = payload._detection_hints && typeof payload._detection_hints === 'object'
+    ? payload._detection_hints
+    : {};
+
   for (let i = payload.messages.length - 1; i >= 0; i -= 1) {
     const message = payload.messages[i];
     if (!message || typeof message !== 'object') continue;
     if (message.role !== 'user') continue;
 
+    // First try JSON-encoded content (structured format)
     const parsed = parseJsonOrNull(message.content);
     if (parsed && typeof parsed.text === 'string') {
+      const inlineHints = parsed.hints && typeof parsed.hints === 'object' ? parsed.hints : {};
       return {
         text: parsed.text,
-        hints: parsed.hints && typeof parsed.hints === 'object' ? parsed.hints : {}
+        hints: { ...detectionHints, ...inlineHints }
       };
+    }
+
+    // Fallback: plain-text content (as sent by local-llm-redactor.js)
+    if (typeof message.content === 'string' && message.content.trim()) {
+      return { text: message.content, hints: detectionHints };
     }
   }
 

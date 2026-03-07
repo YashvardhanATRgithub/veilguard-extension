@@ -59,12 +59,13 @@ function pushRegexMatches(text, regex, type, list, filterFn, normalizeValueFn) {
     const raw = match[0];
     if (raw) {
       const normalized = normalizeValueFn ? normalizeValueFn(raw) : normalizeWhitespace(raw);
+      const displayValue = normalizeWhitespace(raw);
       const start = match.index;
       const end = start + raw.length;
       if (normalized && (!filterFn || filterFn(normalized, raw))) {
         list.push({
           type,
-          value: normalized,
+          value: displayValue,
           start,
           end,
           confidence: CONFIDENCE_BY_TYPE[type] || 0.8

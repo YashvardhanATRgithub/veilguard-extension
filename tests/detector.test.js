@@ -34,7 +34,7 @@ test('detectPII detects valid IBAN values', () => {
 
   const iban = entities.find((e) => e.type === ENTITY_TYPES.IBAN);
   assert.ok(iban);
-  assert.equal(iban.value, 'DE89370400440532013000');
+  assert.equal(iban.value, 'DE89 3704 0044 0532 0130 00');
 });
 
 test('detectPII detects configured custom sensitive terms', () => {

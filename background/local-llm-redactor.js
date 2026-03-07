@@ -161,6 +161,7 @@ export async function redactWithLocalLlm({ text, settings }) {
         options: {
           temperature: 0
         },
+        _detection_hints: hints,
         messages: [
           {
             role: 'system',
