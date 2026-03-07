@@ -1,6 +1,7 @@
+import { ollamaFetch } from './ollama-fetch.js';
 const DEFAULT_ENDPOINT = 'http://127.0.0.1:11434/api/chat';
 const DEFAULT_MODEL = 'qwen2.5:1.5b';
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 60000;
 
 const REDACTION_SYSTEM_PROMPT = [
   'You find private information VALUES in text.',
@@ -149,7 +150,7 @@ export async function redactWithLocalLlm({ text, settings }) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await ollamaFetch(endpoint, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'

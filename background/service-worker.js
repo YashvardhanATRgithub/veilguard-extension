@@ -1,6 +1,7 @@
 import { SessionStore } from './session-store.js';
 import { transformOutgoingRequest } from './transform-engine.js';
 import { createEmptyMetrics, normalizeMetrics, recordTransformMetric } from './metrics.js';
+import { ollamaFetch, resetOllamaCorsCache, closeRelayTab } from './ollama-fetch.js';
 
 const SETTINGS_KEY = 'veilguardSettings';
 const METRICS_KEY = 'veilguardMetrics';
@@ -14,7 +15,7 @@ const DEFAULT_SETTINGS = {
   redactionMode: 'local_llm',
   localLlmEndpoint: OLLAMA_BASE + '/api/chat',
   localLlmModel: 'qwen2.5:1.5b',
-  localLlmTimeoutMs: 15000,
+  localLlmTimeoutMs: 60000,
   detectContextualNames: true,
   detectInternationalIban: true,
   enableLocalNer: true,
@@ -59,6 +60,10 @@ function normalizeTerms(value) {
 
 function normalizeSettings(next) {
   const merged = { ...DEFAULT_SETTINGS, ...(next || {}) };
+  // Migrate old 15s default to new 60s default for existing users
+  if (merged.localLlmTimeoutMs === 15000) {
+    merged.localLlmTimeoutMs = 60000;
+  }
   const minEntityConfidence = Number(merged.minEntityConfidence);
   const endpoint = String(merged.localLlmEndpoint || '').trim();
   const model = String(merged.localLlmModel || '').trim();
@@ -185,7 +190,7 @@ async function ollamaLoadModel(model) {
   const base = resolveOllamaBase(settings);
 
   // Step 1: Verify the model exists via /api/show (lightweight metadata check).
-  const showRes = await fetch(base + '/api/show', {
+  const showRes = await ollamaFetch(base + '/api/show', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ name: model }),
@@ -198,7 +203,7 @@ async function ollamaLoadModel(model) {
   // Step 2: Actually load the model into memory by sending a no-op generate
   // request. This forces Ollama to allocate GPU/RAM for the model. Use a
   // generous timeout because first-time loading on Windows can take 30-60s.
-  const loadRes = await fetch(base + '/api/generate', {
+  const loadRes = await ollamaFetch(base + '/api/generate', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -216,7 +221,7 @@ async function ollamaUnloadModel(model) {
   // Fire-and-forget: tell Ollama to free RAM
   const base = resolveOllamaBase(settings);
   try {
-    fetch(base + '/api/generate', {
+    ollamaFetch(base + '/api/generate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ model, prompt: '', stream: false, keep_alive: 0 })
@@ -241,9 +246,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Lifecycle: load/unload model on toggle
         if (settings.enabled && !prevEnabled) {
-          ollamaLoadModel(settings.localLlmModel || 'qwen2.5:1.5b').catch(() => { });
+          ollamaLoadModel(settings.localLlmModel || 'qwen2.5:1.5b').catch((e) => { log('Model load on enable failed:', e.message); });
         } else if (!settings.enabled && prevEnabled) {
           ollamaUnloadModel(settings.localLlmModel || 'qwen2.5:1.5b').catch(() => { });
+          closeRelayTab();
         }
 
         sendResponse({ ok: true, settings });
@@ -332,8 +338,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       case 'VG_CHECK_OLLAMA': {
         try {
+          resetOllamaCorsCache();
           const base = resolveOllamaBase(settings);
-          const res = await fetch(base, { signal: AbortSignal.timeout(3000) });
+          const res = await ollamaFetch(base, { signal: AbortSignal.timeout(3000) });
           sendResponse({ ok: true, online: res.ok });
         } catch {
           sendResponse({ ok: true, online: false });
@@ -343,7 +350,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case 'VG_LIST_MODELS': {
         try {
           const base = resolveOllamaBase(settings);
-          const res = await fetch(base + '/api/tags', { signal: AbortSignal.timeout(5000) });
+          const res = await ollamaFetch(base + '/api/tags', { signal: AbortSignal.timeout(5000) });
           const data = await res.json();
           const models = (data.models || []).map(m => ({ name: m.name, size: m.size }));
           sendResponse({ ok: true, models });
@@ -365,6 +372,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         try {
           await ollamaUnloadModel(message.model || settings.localLlmModel || 'qwen2.5:1.5b');
           sendResponse({ ok: true });
+        } catch (e) {
+          sendResponse({ ok: false, error: e.message });
+        }
+        return;
+      }
+      case 'VG_OLLAMA_PROXY': {
+        try {
+          const res = await ollamaFetch(message.url, {
+            method:  message.fetchOptions?.method  || 'GET',
+            headers: message.fetchOptions?.headers || {},
+            body:    message.fetchOptions?.body    || null,
+            signal:  AbortSignal.timeout(message.fetchOptions?.timeoutMs || 60000)
+          });
+          const data = await res.json().catch(() => null);
+          sendResponse({ ok: true, status: res.status, data });
         } catch (e) {
           sendResponse({ ok: false, error: e.message });
         }

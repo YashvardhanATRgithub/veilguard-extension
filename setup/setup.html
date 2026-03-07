@@ -258,32 +258,17 @@
 
                 <div class="guide-step">
                     <div class="step-number">3</div>
-                    <div class="step-body">
-                        <h3>Configure & Auto-start Ollama</h3>
-                        <p>VeilGuard needs Ollama to allow browser extension requests. Set this up <strong>once</strong>
-                            and Ollama will auto-start with the right settings.</p>
+                    <div class="step-body" id="windows-cors-fix">
+                        <h3>Fix Extension Block (CORS) & Auto-start</h3>
+                        <p>Ollama on Windows blocks browser extensions by default. <strong>Run this command once</strong> to fix it permanently. It will configure Ollama and restart it immediately.</p>
 
                         <div class="method-card">
-                            <div class="method-tag recommended">Permanent setup</div>
-                            <h4>Add system environment variable</h4>
-                            <p>1. Open <strong>Start menu</strong> → search <strong>"Environment Variables"</strong> →
-                                click <strong>"Edit the system environment variables"</strong></p>
-                            <p>2. Click <strong>"Environment Variables"</strong> button</p>
-                            <p>3. Under <strong>System variables</strong>, click <strong>New</strong>:</p>
-                            <p style="margin-left:16px">Variable name: <code>OLLAMA_ORIGINS</code><br />Variable value:
-                                <code>*</code></p>
-                            <p>4. Click OK to save. Restart the <strong>Ollama</strong> system tray app.</p>
-                            <p class="note">Ollama auto-starts with Windows by default via the system tray. This env var
-                                ensures VeilGuard can communicate with it.</p>
-                        </div>
-
-                        <div class="method-card">
-                            <h4>Quick start (one-time, not persistent)</h4>
-                            <p>Or start from PowerShell for this session only:</p>
+                            <div class="method-tag recommended">Run in PowerShell</div>
                             <div class="cmd-block">
-                                <code>$env:OLLAMA_ORIGINS='*'; ollama serve</code>
-                                <button class="copy-btn" data-cmd="$env:OLLAMA_ORIGINS='*'; ollama serve">Copy</button>
+                                <code>[Environment]::SetEnvironmentVariable("OLLAMA_ORIGINS", "chrome-extension://*,*", "Machine"); Stop-Process -Name "ollama app", "ollama" -Force -ErrorAction SilentlyContinue; Start-Sleep -s 1; Start-Process "$env:LOCALAPPDATA\Programs\Ollama\ollama app.exe"</code>
+                                <button class="copy-btn" data-cmd='[Environment]::SetEnvironmentVariable("OLLAMA_ORIGINS", "chrome-extension://*,*", "Machine"); Stop-Process -Name "ollama app", "ollama" -Force -ErrorAction SilentlyContinue; Start-Sleep -s 1; Start-Process "$env:LOCALAPPDATA\Programs\Ollama\ollama app.exe"'>Copy</button>
                             </div>
+                            <p class="note">This command: 1) Sets the required environment variable. 2) Closes Ollama. 3) Restarts Ollama with the new settings.</p>
                         </div>
                     </div>
                 </div>

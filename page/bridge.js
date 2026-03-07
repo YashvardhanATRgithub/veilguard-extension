@@ -4,7 +4,7 @@
 
   const BRIDGE_SOURCE = 'VEILGUARD_BRIDGE';
   const CONTENT_SOURCE = 'VEILGUARD_CONTENT';
-  const TRANSFORM_TIMEOUT_MS = 12000;
+  const TRANSFORM_TIMEOUT_MS = 60000;
 
   const CHAT_URL_PATTERNS = [
     /\/(chat|conversation|completion|prompt)(\/|$|\?)/i,

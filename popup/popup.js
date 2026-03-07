@@ -131,12 +131,32 @@ async function enableSequence() {
   }
   setStep(stepOllama, stepOllamaIcon, 'done');
 
-  // Step 2: Check model exists
+  // Step 2: Check model exists & CORS
   setStep(stepModel, stepModelIcon, 'active');
   const selectedModel = modelSelect.value || 'qwen2.5:1.5b';
   const loadRes = await send({ type: 'VG_LOAD_MODEL', model: selectedModel });
+
+  // Did we get a CORS 403 block from Ollama? 
+  // (ollamaFetch sets this flag if it gets a 403)
+  const { veilguard_cors_blocked } = await chrome.storage.local.get('veilguard_cors_blocked');
+  
+  if (veilguard_cors_blocked) {
+    setStep(stepModel, stepModelIcon, 'error');
+    enabledEl.checked = false;
+    enabledEl.disabled = false;
+    updateVisualState(false);
+    setupGuide.classList.remove('hidden');
+    // Open setup page directly to the Windows tab 
+    document.getElementById('setupHint').innerHTML = `
+      <span style="color:var(--error); font-weight:600">Extension Blocked by Ollama (CORS)</span><br/><br/>
+      Please run the Windows Fix command in the setup guide.
+    `;
+    setTimeout(() => progressSection.classList.add('hidden'), 500);
+    return;
+  }
+
   if (!loadRes?.ok) {
-    // Model check failed (CORS or model missing) — warn but still enable
+    // Other model error (e.g. not pulled) — warn but enable
     setStep(stepModel, stepModelIcon, 'warn');
     showToast('⚠ Model check skipped — will load on first use');
   } else {

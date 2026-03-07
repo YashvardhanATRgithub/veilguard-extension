@@ -333,6 +333,33 @@
     }
   }
 
+  // ── Ollama fetch relay (CORS bypass for Windows) ─────────────────────
+  // The service worker's fetch() carries Origin: chrome-extension://…
+  // which some Ollama builds reject with 403.  When that happens the
+  // service worker asks us to make the call instead — our fetch() uses
+  // the web-page origin, which Ollama accepts.
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== 'VG_OLLAMA_FETCH') return false;
+
+    const { url, fetchOptions } = message;
+    fetch(url, {
+      method:  fetchOptions?.method  || 'GET',
+      headers: fetchOptions?.headers || {},
+      body:    fetchOptions?.body    || null,
+      signal:  AbortSignal.timeout(60000)
+    })
+      .then(async (res) => {
+        let data = null;
+        try { data = await res.json(); } catch { /* non-JSON response */ }
+        sendResponse({ status: res.status, data });
+      })
+      .catch((err) => {
+        sendResponse({ error: err instanceof Error ? err.message : String(err) });
+      });
+
+    return true; // keep channel open for async sendResponse
+  });
+
   window.addEventListener('message', async (event) => {
     if (event.source !== window) return;
     const data = event.data;

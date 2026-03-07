@@ -316,40 +316,44 @@
 
         try {
             const ollamaMessages = conv.messages.map(m => ({ role: m.role, content: m.content }));
+            const chatBody = JSON.stringify({
+                model: conv.model,
+                messages: ollamaMessages,
+                stream: true
+            });
 
             const res = await fetch(OLLAMA_BASE + '/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: conv.model,
-                    messages: ollamaMessages,
-                    stream: true
-                }),
+                body: chatBody,
                 signal: abortController.signal
             });
 
-            if (!res.ok) {
+            if (res.status === 403) {
+                fullResponse = `⚠️ Error: Ollama returned 403 Forbidden. This means Ollama is blocking the extension. Please go to the VeilGuard Setup page and run the Windows CORS fix command.`;
+                updateStreamingBubble(assistantBubble, fullResponse);
+            } else if (!res.ok) {
                 throw new Error(`Ollama returned ${res.status}`);
-            }
+            } else {
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
 
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split('\n').filter(l => l.trim());
 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n').filter(l => l.trim());
-
-                for (const line of lines) {
-                    try {
-                        const data = JSON.parse(line);
-                        if (data.message?.content) {
-                            fullResponse += data.message.content;
-                            updateStreamingBubble(assistantBubble, fullResponse);
-                        }
-                    } catch { /* skip malformed lines */ }
+                    for (const line of lines) {
+                        try {
+                            const data = JSON.parse(line);
+                            if (data.message?.content) {
+                                fullResponse += data.message.content;
+                                updateStreamingBubble(assistantBubble, fullResponse);
+                            }
+                        } catch { /* skip */ }
+                    }
                 }
             }
 
